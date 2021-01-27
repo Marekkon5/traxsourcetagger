@@ -24,7 +24,7 @@ pub fn start_ui() {
         .title("Traxsource Tagger")
         .size(400, 650)
         .resizable(false)
-        .debug(true)
+        .debug(false)
         .build()
         .unwrap();
 

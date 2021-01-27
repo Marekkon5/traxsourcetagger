@@ -130,17 +130,21 @@ jobs:
     - name: Compile
       uses: actions-rs/cargo@v1
       with:
-        command: build
+        command: bundle
         args: --release
     
     # Strip, don't compress because UPX on Big Sur doesn't work properly
     - name: Compress
       run: |
-        strip target/release/traxsourcetagger
+        cd target/release/bundle/osx
+        strip TraxsourceTagger.app/Contents/MacOS/traxsourcetagger
+        chmod +x TraxsourceTagger.app/Contents/MacOS/traxsourcetagger
+        zip -r TraxsourceTagger.zip .
+        cd -
         
     # Upload
     - name: Upload
       uses: actions/upload-artifact@v2
       with:
         name: traxsourcetagger-mac
-        path: target/release/traxsourcetagger
+        path: target/release/bundle/osx/TraxsourceTagger.zip

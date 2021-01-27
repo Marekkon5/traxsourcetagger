@@ -39,11 +39,25 @@ winres = "0.1"
 
 
 # Optimize for size, speed doesn't matter due to rate limiting
-# For smaller size use: `strip discogstaggerrs` (Linux/Mac)
-# `upx -9 discogstaggerrs` - compress, any OS
+# For smaller size use: `strip traxsourcetagger` (Linux/Mac)
+# `upx -9 traxsourcetagger` - compress, any OS
 # More: https://github.com/johnthagen/min-sized-rust
 
 [profile.release]
 opt-level = 'z'
 lto = true
 # panic = 'abort'
+
+# Bundling, only used for Mac, not used for Linux/Win
+[package.metadata.bundle]
+name = "TraxsourceTagger"
+identifier = "com.marekkon5.traxsourcetagger"
+icon = ["assets/32x32.png", "assets/128x128.png", "assets/128x128@2x.png", "assets/icon.icns", "assets/icon.ico"]
+version = "0.1.0"
+resources = []
+copyright = "Copyright (c) Marekkon5 2021. All rights reserved."
+category = "Music"
+short_description = "Tool to tag your audio library using data from Traxsource."
+long_description = """
+Simple Rust + Webview app to automatically tag your music collection using data from Traxsource.
+"""]
