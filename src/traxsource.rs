@@ -153,7 +153,13 @@ impl Track {
     //Get full track title with version
     pub fn full_title(&self) -> String {
         match &self.version {
-            Some(v) => format!("{} ({})", &self.title, v),
+            Some(v) => {
+                if v.len() > 0 && v != " " {
+                    format!("{} ({})", &self.title, v)
+                } else {
+                    self.title.to_owned()
+                }
+            }
             None => self.title.to_owned()
         }
     }
