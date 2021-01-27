@@ -1,0 +1,96 @@
+name: Build
+on: [push, pull_request]
+
+jobs:
+  build-linux:
+    name: Linux
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y libwebkit2gtk-4.0-dev
+    # Get repo
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Compile UI
+      run: |
+        cd client
+        npm i
+        npm run build
+        cd ..
+
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true
+    
+    # Cargo build release
+    - name: Compile
+      uses: actions-rs/cargo@v1
+      with:
+        command: build
+        args: --release
+    
+    # Strip and compress with UPX
+    - uses: joshuarli/strip-upx-action@master
+      with:
+        infile: 'target/release/traxsourcetagger'
+        strip_args: '--strip-all'
+        upx_args: '-9 --lzma'
+    
+    # Upload
+    - name: Upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: discogstagger-linux
+        path: target/release/traxsourcetagger
+
+  build-win:
+    name: Windows
+    runs-on: windows-latest
+
+    steps:
+
+    # Get repo
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Compile UI
+      run: |
+        cd client
+        npm i
+        npm run build
+        cd ..
+
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+        override: true
+    
+    # Cargo build release
+    - name: Compile
+      uses: actions-rs/cargo@v1
+      with:
+        command: build
+        args: --release
+    
+    # Compress with UPX
+    - name: Compress
+      run: |
+        choco install upx
+        upx -9 --lzma target\release\traxsourcetagger.exe
+    
+    # Upload
+    - name: Upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: discogstagger-win
+        path: target\release\traxsourcetagger.exe

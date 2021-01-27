@@ -1,0 +1,49 @@
+[package]
+name = "traxsourcetagger"
+version = "0.1.0"
+authors = ["Marekkon5"]
+edition = "2018"
+license = "MIT"
+description = "Tool to tag your audio library using data from Traxsource"
+homepage = "https://github.com/Marekkon5/traxsourcetagger"
+repository = "https://github.com/Marekkon5/traxsourcetagger"
+keywords = ["gui", "audio"]
+categories = ["multimedia::audio"]
+build = "src/build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde_json = "1.0"
+webbrowser = "0.5.5"
+minify-html = "0.3.10"
+chrono = "0.4"
+scraper = "0.12"
+walkdir = "2.3"
+metaflac = "0.2"
+regex = "1"
+strsim = "0.10"
+threadpool = "1.8"
+tungstenite = "0.11"
+tinyfiledialogs = "3.3"
+reqwest = { version = "0.10", features = [ "blocking" ] }
+
+# Edge doesn't work on 0.7.2, use master
+web-view = { git = "https://github.com/Boscop/web-view.git", features = ["edge"] }
+
+# AIFF Support, waiting for merge
+id3 = { git = "https://github.com/Marekkon5/rust-id3.git" }
+
+[target.'cfg(windows)'.build-dependencies]
+winres = "0.1"
+
+
+# Optimize for size, speed doesn't matter due to rate limiting
+# For smaller size use: `strip discogstaggerrs` (Linux/Mac)
+# `upx -9 discogstaggerrs` - compress, any OS
+# More: https://github.com/johnthagen/min-sized-rust
+
+[profile.release]
+opt-level = 'z'
+lto = true
+# panic = 'abort'
