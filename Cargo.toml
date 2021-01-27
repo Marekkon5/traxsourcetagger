@@ -60,4 +60,4 @@ category = "Music"
 short_description = "Tool to tag your audio library using data from Traxsource."
 long_description = """
 Simple Rust + Webview app to automatically tag your music collection using data from Traxsource.
-"""]
+"""
