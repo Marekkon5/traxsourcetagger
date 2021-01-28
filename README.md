@@ -2,7 +2,7 @@
 
 Simple Rust + Webview app to automatically tag your music collection using data from Traxsource.
 
-![Screenshot](https://i.imgur.com/YzXZOx2.png)
+![Screenshot](https://i.imgur.com/Jqm2Lk1.png)
 
 # Compatibility
 <table>
@@ -80,7 +80,10 @@ upx -9 discogstaggerrs
 
 # Credits
 
-BasCurtiz - Request, idea, tester, trailer, design.
+Request: atarbig, Bas Curtiz, rosgr100
+Tester, trailer, design, comparison: Bas Curtiz
+Trailer: https://youtu.be/7ZHE8WJR918
+Strictness comparison: https://docs.google.com/spreadsheets/d/1E-ObqZTVL0gJTK4W267uWGdgsumvtZxJNW4CYfveuRk/edit?usp=sharing
 
 # Support
 
