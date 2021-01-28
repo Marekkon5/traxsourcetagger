@@ -80,10 +80,10 @@ upx -9 discogstaggerrs
 
 # Credits
 
-Request: atarbig, Bas Curtiz, rosgr100
-Tester, trailer, design, comparison: Bas Curtiz
-Trailer: https://youtu.be/7ZHE8WJR918
-Strictness comparison: https://docs.google.com/spreadsheets/d/1E-ObqZTVL0gJTK4W267uWGdgsumvtZxJNW4CYfveuRk/edit?usp=sharing
+Request: atarbig, Bas Curtiz, rosgr100  
+Tester, trailer, design, comparison: Bas Curtiz  
+Trailer: https://youtu.be/7ZHE8WJR918  
+Strictness comparison: https://docs.google.com/spreadsheets/d/1E-ObqZTVL0gJTK4W267uWGdgsumvtZxJNW4CYfveuRk/edit?usp=sharing  
 
 # Support
 
