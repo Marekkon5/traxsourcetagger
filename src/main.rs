@@ -36,7 +36,7 @@ fn windows_edge_setup() {
     //Show msgbox
     msgbox::create(
         "Traxsource Tagger", 
-        "Traxsource Tagger depends on local WebSocket connection to join UI with backend. However it is currently blocked by Edge Sandboxing. After pressing OK it will be enabled (requires Administrator privelidges).",
+        "Traxsource Tagger depends on local WebSocket connection to join UI with backend. However it is currently blocked by Edge Sandboxing. After pressing OK it will be enabled (requires Administrator privileges).",
         IconType::Info).ok();
 
     //Enable
