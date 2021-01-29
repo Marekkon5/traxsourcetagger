@@ -43,6 +43,10 @@ Simple Rust + Webview app to automatically tag your music collection using data 
 
 # Troubleshooting
 
+### Windows:
+If you get an error MSVCP140.dll, VCRUNTIME140.dll, or VCRUNTIME140_1.dll not found, 
+Install the latest Microsoft Visual C++ Redistributable from here: https://aka.ms/vs/16/release/vc_redist.x64.exe and open the .exe again.  
+
 ### MacOS:
 If you get a warning on MacOS, this app can't be opened for whatever reason:  
 - Click Apple icon on top left

@@ -3,6 +3,7 @@
 extern crate msgbox;
 
 use std::process::Command;
+use std::process;
 use msgbox::IconType;
 
 mod traxsource;
@@ -39,8 +40,14 @@ fn windows_edge_setup() {
         IconType::Info).ok();
 
     //Enable
-    runas::Command::new("cmd")
+    let status = runas::Command::new("cmd")
         .arg("/c CheckNetIsolation.exe LoopbackExempt -a -n=Microsoft.Win32WebViewHost_cw5n1h2txyewy")
         .status()
         .unwrap();
+
+    //Failed
+    if !status.success() {
+        msgbox::create("Traxsource Tagger", "An error occured!", IconType::Error).ok();
+        process::exit(-1);
+    }
 }
