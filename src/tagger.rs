@@ -95,7 +95,7 @@ pub fn match_track(traxsource: &Traxsource, info: &AudioFileInfo, config: &Tagge
     let mut track = fuzz.first().unwrap().1.clone();
 
     //Fetch extra meta if required
-    if config.album && config.art {
+    if config.album || config.art {
         traxsource.extend_track(&mut track).ok();
     }
 
