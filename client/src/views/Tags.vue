@@ -9,12 +9,12 @@
 
       <Checkbox var='title' title='Title' class='grid'></Checkbox>
       <Checkbox var='artists' title='Artists' class='grid'></Checkbox>
-      <Checkbox var='album' title='Album' class='grid'></Checkbox>
-      <Checkbox var='label' title='Label' class='grid'></Checkbox>
-      <Checkbox var='date' title='Date' class='grid'></Checkbox>
+      <Checkbox var='album' title='Album' class='grid' checked></Checkbox>
+      <Checkbox var='label' title='Label' class='grid' checked></Checkbox>
+      <Checkbox var='date' title='Date' class='grid' checked></Checkbox>
       <Checkbox var='genre' title='Genre' class='grid' checked></Checkbox>
       <Checkbox var='bpm' title='BPM' class='grid' checked></Checkbox>
-      <Checkbox var='key' title='Key' class='grid' checked></Checkbox>
+      <Checkbox var='key' title='Key' class='grid'></Checkbox>
 
       <Checkbox var='art' title='Album Art' class='art'></Checkbox>
 
