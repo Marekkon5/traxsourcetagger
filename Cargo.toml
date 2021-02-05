@@ -29,12 +29,10 @@ tinyfiledialogs = "3.3"
 msgbox = "0.6"
 runas = "0.2.1"
 reqwest = { version = "0.10", features = [ "blocking" ] }
+id3 = { git = "https://github.com/polyfloyd/rust-id3.git" }
 
 # Edge doesn't work on 0.7.2, use master
 web-view = { git = "https://github.com/Boscop/web-view.git", features = ["edge"] }
-
-# AIFF Support, waiting for merge
-id3 = { git = "https://github.com/polyfloyd/rust-id3.git" }
 
 [target.'cfg(windows)'.build-dependencies]
 winres = "0.1"
