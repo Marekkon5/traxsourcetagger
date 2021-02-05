@@ -2,6 +2,9 @@ extern crate metaflac;
 
 use walkdir::WalkDir;
 use std::error::Error;
+use std::fs::File;
+use std::io::prelude::*;
+use std::io::SeekFrom;
 use chrono::naive::NaiveDate;
 use chrono::Datelike;
 use metaflac::block::PictureType as FLACPictureType;
@@ -33,23 +36,7 @@ pub fn load_files(path: &str) -> Vec<AudioFileInfo> {
 fn load_file_info(path: &str) -> Result<AudioFileInfo, Box<dyn Error>> {
     //Load FLAC
     if path.to_ascii_lowercase().ends_with(".flac") {
-        let tag = metaflac::Tag::read_from_path(path)?;
-        let vorbis = tag.vorbis_comments().ok_or("Missing Vorbis data!")?;
-        //Parse artists
-        let artists = match vorbis.artist().ok_or("Missing artists!")?.len() {
-            0 => None.ok_or("Missing artists!")?,
-            //Single artist tag, manually parse
-            1 => parse_artist_tag(vorbis.artist().unwrap().first().unwrap()),
-            //Multiple, keep as is
-            _ => vorbis.artist().unwrap().to_owned()
-        };
-
-        return Ok(AudioFileInfo {
-            path: path.to_owned(),
-            title: vorbis.title().ok_or("Missing title!")?.first().ok_or("Missing title!")?.to_owned(),
-            artists: artists,
-            format: AudioFormat::FLAC
-        })
+        return load_flac_info(path);
     }
 
     //MP3
@@ -58,7 +45,41 @@ fn load_file_info(path: &str) -> Result<AudioFileInfo, Box<dyn Error>> {
     }
 
     //AIFF
-    return load_id3_info(path, &id3::Tag::read_from_aiff(path)?, AudioFormat::AIFF);
+    load_id3_info(path, &id3::Tag::read_from_aiff(path)?, AudioFormat::AIFF)
+}
+
+fn load_flac_info(path: &str) -> Result<AudioFileInfo, Box<dyn Error>> {
+    //Load header
+    let mut file = File::open(path)?;
+    let mut header: [u8; 4] = [0; 4];
+    file.read_exact(&mut header)?;
+    //Check for FLAC with ID3
+    if &header[0..3] == b"ID3" {
+        return Err(std::io::Error::new(std::io::ErrorKind::InvalidData, "FLAC ID3 not supported!").into());
+    }
+    //Check if FLAC
+    if &header != b"fLaC" {
+        return Err(std::io::Error::new(std::io::ErrorKind::InvalidData, "Not a valid FLAC!").into());
+    }
+    file.seek(SeekFrom::Start(0))?;
+    //Load tag
+    let tag = metaflac::Tag::read_from(&mut file)?;
+    let vorbis = tag.vorbis_comments().ok_or("Missing Vorbis data!")?;
+    //Parse artists
+    let artists = match vorbis.artist().ok_or("Missing artists!")?.len() {
+        0 => None.ok_or("Missing artists!")?,
+        //Single artist tag, manually parse
+        1 => parse_artist_tag(vorbis.artist().unwrap().first().unwrap()),
+        //Multiple, keep as is
+        _ => vorbis.artist().unwrap().to_owned()
+    };
+
+    Ok(AudioFileInfo {
+        path: path.to_owned(),
+        title: vorbis.title().ok_or("Missing title!")?.first().ok_or("Missing title!")?.to_owned(),
+        artists,
+        format: AudioFormat::FLAC
+    })
 }
 
 //Load tags from ID3
@@ -67,7 +88,7 @@ fn load_id3_info(path: &str, tag: &id3::Tag, format: AudioFormat) -> Result<Audi
         path: path.to_owned(),
         title: tag.title().ok_or("Missing title tag!")?.to_owned(),
         artists: parse_artist_tag(tag.artist().ok_or("Missing artist tag!")?),
-        format: format
+        format
     })
 }
 
@@ -164,38 +185,35 @@ fn update_id3_tags(tag: &mut id3::Tag, track: &Track, config: &TaggerConfig) -> 
 
     //Parse date
     if config.release_date {
-        match NaiveDate::parse_from_str(&track.release_date, "%Y-%m-%d") {
-            Ok(date) => {
-                //Date ID3 v2.4
-                if config.id3v24 && (config.overwrite || tag.date_recorded().is_none()) {
-                    //Remove ID3v2.3
-                    tag.remove("TDAT");
-                    tag.remove("TYER");
+        if let Ok(date) = NaiveDate::parse_from_str(&track.release_date, "%Y-%m-%d") {
+            //Date ID3 v2.4
+            if config.id3v24 && (config.overwrite || tag.date_recorded().is_none()) {
+                //Remove ID3v2.3
+                tag.remove("TDAT");
+                tag.remove("TYER");
 
-                    tag.set_date_recorded(id3::Timestamp {
-                        year: date.year(),
-                        month: Some(date.month() as u8),
-                        day: Some(date.day() as u8),
-                        hour: None,
-                        minute: None,
-                        second: None
-                    });
+                tag.set_date_recorded(id3::Timestamp {
+                    year: date.year(),
+                    month: Some(date.month() as u8),
+                    day: Some(date.day() as u8),
+                    hour: None,
+                    minute: None,
+                    second: None
+                });
+            }
+            //Date ID3 v2.3
+            if !config.id3v24 {
+                if config.overwrite || tag.get("TDAT").is_none() {
+                    tag.remove_date_recorded();
+                    tag.set_text("TDAT", &format!("{:02}{:02}", date.day(), date.month()))
                 }
-                //Date ID3 v2.3
-                if !config.id3v24 {
-                    if config.overwrite || tag.get("TDAT").is_none() {
-                        tag.remove_date_recorded();
-                        tag.set_text("TDAT", &format!("{:02}{:02}", date.day(), date.month()))
-                    }
-    
-                    //Year
-                    if config.overwrite || tag.year().is_none() {
-                        tag.remove_date_recorded();
-                        tag.set_year(date.year());
-                    }
+
+                //Year
+                if config.overwrite || tag.year().is_none() {
+                    tag.remove_date_recorded();
+                    tag.set_year(date.year());
                 }
-            },
-            Err(_) => {}
+            }
         }
     }
 
@@ -218,7 +236,7 @@ fn update_id3_tags(tag: &mut id3::Tag, track: &Track, config: &TaggerConfig) -> 
                     mime_type: String::from("image/jpeg"),
                     picture_type: ID3PictureType::CoverFront,
                     description: String::from("Cover"),
-                    data: data
+                    data
                 });
             },
             Err(_) => eprintln!("Error downloading album art, ignoring!")
@@ -250,14 +268,14 @@ pub enum AudioFormat {
 
 //Try to split artist string with common separators
 fn parse_artist_tag(src: &str) -> Vec<String> {
-    if src.contains(";") {
-        return src.split(";").collect::<Vec<&str>>().into_iter().map(|v| v.to_owned()).collect();
+    if src.contains(';') {
+        return src.split(';').collect::<Vec<&str>>().into_iter().map(|v| v.to_owned()).collect();
     }
-    if src.contains(",") {
-        return src.split(",").collect::<Vec<&str>>().into_iter().map(|v| v.to_owned()).collect();
+    if src.contains(',') {
+        return src.split(',').collect::<Vec<&str>>().into_iter().map(|v| v.to_owned()).collect();
     }
-    if src.contains("/") {
-        return src.split("/").collect::<Vec<&str>>().into_iter().map(|v| v.to_owned()).collect();
+    if src.contains('/') {
+        return src.split('/').collect::<Vec<&str>>().into_iter().map(|v| v.to_owned()).collect();
     }
     vec![src.to_owned()]
 }

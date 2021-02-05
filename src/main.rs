@@ -22,18 +22,15 @@ fn main() {
 //Bug with webview and edge where loopback is disabled, check for it
 fn windows_edge_setup() {
     //Check status
-    match Command::new("cmd")
+    if let Ok(output) = Command::new("cmd")
         .arg("/c")
         .arg("CheckNetIsolation.exe LoopbackExempt -s")
         .output() {
-            Ok(output) => {
-                //Get output as String
-                let output_text = String::from_utf8(output.stdout).unwrap_or(String::new());
-                if output_text.to_lowercase().contains("_cw5n1h2txyewy") {
-                    return;
-                }
-            },
-            Err(_) => {}
+            //Get output as String
+            let output_text = String::from_utf8(output.stdout).unwrap_or_else(|_| String::new());
+            if output_text.to_lowercase().contains("_cw5n1h2txyewy") {
+                return;
+            }
     }
     //Show msgbox
     msgbox::create(

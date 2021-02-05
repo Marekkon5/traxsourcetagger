@@ -19,7 +19,7 @@ impl Traxsource {
             .unwrap();
 
         Traxsource {
-            client: client,
+            client,
         }
     }
 
@@ -90,13 +90,13 @@ impl Traxsource {
             let release_date = track_element.select(&selector).next().unwrap().text().collect::<Vec<_>>().first().unwrap().to_owned();
 
             tracks.push(Track {
-                title: title,
-                version: version,
+                title,
+                version,
                 url: url.to_owned(),
-                artists: artists,
+                artists,
                 label: label.to_owned(),
-                key: key,
-                bpm: bpm,
+                key,
+                bpm,
                 genre: genre.to_owned(),
                 release_date: release_date.to_owned(),
                 album: None,
@@ -154,7 +154,7 @@ impl Track {
     pub fn full_title(&self) -> String {
         match &self.version {
             Some(v) => {
-                if v.len() > 0 && v != " " {
+                if !v.is_empty() && v != " " {
                     format!("{} ({})", &self.title, v)
                 } else {
                     self.title.to_owned()

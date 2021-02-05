@@ -938,8 +938,8 @@ dependencies = [
 
 [[package]]
 name = "id3"
-version = "0.5.1"
-source = "git+https://github.com/Marekkon5/rust-id3.git#16a2782382643c2517dcb88dbaf0b6cf4b1a127b"
+version = "0.6.0"
+source = "git+https://github.com/polyfloyd/rust-id3.git#5adbdbe4852b2f984deadd892fd558c70ffa679c"
 dependencies = [
  "bitflags",
  "byteorder",

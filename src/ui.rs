@@ -8,7 +8,6 @@ use std::time::{SystemTime, Duration};
 use tungstenite::server::accept;
 use tungstenite::{Message, WebSocket};
 use serde_json::{Value, json};
-use webbrowser;
 
 use crate::tagger::TaggerConfig;
 use crate::traxsource::Traxsource;
@@ -127,7 +126,7 @@ fn handle_messange(text: &str, websocket: &mut WebSocket<TcpStream>) -> Result<(
             let files = utils::load_files(path);
 
             //Initialize
-            let start_time = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap_or(Duration::from_millis(0)).as_secs();
+            let start_time = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap_or_else(|_| Duration::from_millis(0)).as_secs();
             let mut ok = 0;
             let mut fail = 0;
             let total = files.len();
@@ -163,7 +162,7 @@ fn handle_messange(text: &str, websocket: &mut WebSocket<TcpStream>) -> Result<(
             //Done
             websocket.write_message(Message::from(json!({
                 "action": "done",
-                "took": SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap_or(Duration::from_millis(0)).as_secs() - start_time,
+                "took": SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap_or_else(|_| Duration::from_millis(0)).as_secs() - start_time,
                 "ok": ok,
                 "fail": fail,
                 "total": total,
@@ -177,7 +176,7 @@ fn handle_messange(text: &str, websocket: &mut WebSocket<TcpStream>) -> Result<(
 
 //Calculate remaining seconds
 fn calculate_eta(start_time: u64, currently: u64, total: u64) -> u64 {
-    let current_time = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap_or(Duration::from_millis(0)).as_secs();
+    let current_time = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap_or_else(|_| Duration::from_millis(0)).as_secs();
     let tpt = (current_time - start_time) as f64 / currently as f64;
     ((total - currently) as f64 * tpt) as u64
 }

@@ -69,7 +69,7 @@ pub fn match_track(traxsource: &Traxsource, info: &AudioFileInfo, config: &Tagge
         &info.artists.first().unwrap()
     ))?;
 
-    if results.len() == 0 {
+    if results.is_empty() {
         return Ok(None);
     }
     
@@ -80,14 +80,12 @@ pub fn match_track(traxsource: &Traxsource, info: &AudioFileInfo, config: &Tagge
             &clean_title(&track.full_title(), true), 
             &clean_title(&info.title, true)
         ) * 100_f64;
-        if fuzz_title >= config.fuzziness as f64 {
-            if match_artist(&info.artists, &track.artists) {
-                fuzz.push((fuzz_title, track));
-            }
+        if fuzz_title >= config.fuzziness as f64 && match_artist(&info.artists, &track.artists) {
+            fuzz.push((fuzz_title, track));
         }
     }
     //No results
-    if fuzz.len() == 0 {
+    if fuzz.is_empty() {
         return Ok(None)
     }
     //Sort
@@ -119,7 +117,7 @@ fn clean_title(title: &str, matching: bool) -> String {
 
 //Match atleast 1 artist
 fn match_artist(a: &Vec<String>, b: &Vec<String>) -> bool {
-    let bb: Vec<String> = b.into_iter().map(|e| e.to_ascii_lowercase().replace(" ", "")).collect();
+    let bb: Vec<String> = b.iter().map(|e| e.to_ascii_lowercase().replace(" ", "")).collect();
     for aa in a {
         if bb.contains(&aa.to_ascii_lowercase().replace(" ", "")) {
             return true;

@@ -34,7 +34,7 @@ reqwest = { version = "0.10", features = [ "blocking" ] }
 web-view = { git = "https://github.com/Boscop/web-view.git", features = ["edge"] }
 
 # AIFF Support, waiting for merge
-id3 = { git = "https://github.com/Marekkon5/rust-id3.git" }
+id3 = { git = "https://github.com/polyfloyd/rust-id3.git" }
 
 [target.'cfg(windows)'.build-dependencies]
 winres = "0.1"
