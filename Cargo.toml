@@ -1,6 +1,6 @@
 [package]
 name = "traxsourcetagger"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Marekkon5"]
 edition = "2018"
 license = "MIT"
@@ -55,7 +55,7 @@ lto = true
 name = "TraxsourceTagger"
 identifier = "com.marekkon5.traxsourcetagger"
 icon = ["assets/32x32.png", "assets/128x128.png", "assets/128x128@2x.png", "assets/icon.icns", "assets/icon.ico"]
-version = "0.1.0"
+version = "0.1.1"
 resources = []
 copyright = "Copyright (c) Marekkon5 2021. All rights reserved."
 category = "Music"
