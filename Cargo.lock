@@ -938,8 +938,9 @@ dependencies = [
 
 [[package]]
 name = "id3"
-version = "0.6.0"
-source = "git+https://github.com/polyfloyd/rust-id3.git#5adbdbe4852b2f984deadd892fd558c70ffa679c"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7757528cac50df8681481dc91fd0b0e4a9886f78db9b6579d3c181d1184c7d94"
 dependencies = [
  "bitflags",
  "byteorder",
