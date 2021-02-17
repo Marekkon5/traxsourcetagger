@@ -87,7 +87,9 @@ impl Traxsource {
 
             //Release date
             selector = Selector::parse("div.r-date").unwrap();
-            let release_date = track_element.select(&selector).next().unwrap().text().collect::<Vec<_>>().first().unwrap().to_owned();
+            let release_date_raw = track_element.select(&selector).next().unwrap().text().collect::<Vec<_>>().first().unwrap().to_owned();
+            let release_date_clean = release_date_raw.replace("Pre-order for ", "");
+            let release_date = release_date_clean.trim().to_owned();
 
             tracks.push(Track {
                 title,
