@@ -2,6 +2,10 @@
 
 Simple Rust + Webview app to automatically tag your music collection using data from Traxsource.
 
+# WARNING: Deprecated
+This app has been deprecated for OneTagger, because we wanted to unify all the taggers. [Github Repository](https://github.com/Marekkon5/onetagger), [Website](https://onetagger.github.io/).
+
+
 ![Screenshot](https://i.imgur.com/Jqm2Lk1.png)
 
 # Compatibility
